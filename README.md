@@ -1,6 +1,6 @@
 # l'oGGo: Rich Terminal User Interface Logging App
 ![release](https://img.shields.io/github/v/release/aurc/loggo)
-![release workflow](https://github.com/aurc/loggo/actions/workflows/go.yml/badge.svg)
+![release workflow](https://github.com/marawanxmamdouh/loggo/actions/workflows/go.yml/badge.svg)
 ![license](https://img.shields.io/github/license/aurc/loggo)
 ![go_version](https://img.shields.io/github/go-mod/go-version/aurc/loggo)
 ![downloads](https://img.shields.io/github/downloads/aurc/loggo/total)
@@ -57,14 +57,14 @@ Assuming you have [go](https://go.dev/) installed in your system (best choice if
 are in your `PATH`, just run:
 
 ````
-go install github.com/aurc/loggo@latest
+go install github.com/marawanxmamdouh/loggo@latest
 ````
 
 ### Build from Source:
 Including **macOS**, build from source. 
 Pre-Reqs:
 - [Golang](https://go.dev/) v1.8+
-- Checkout the project from [https://github.com/aurc/loggo/](https://github.com/aurc/loggo/)
+- Checkout the project from [https://github.com/marawanxmamdouh/loggo/](https://github.com/marawanxmamdouh/loggo/)
 
 ````
 go build -o loggo
@@ -78,11 +78,11 @@ This option might be suitable for you if you don't have Home/Linux-Brew or golan
 readly available for you. In this case you can download a pre-compiled exectuable binary
 for the following platforms:
 
-Latest Release [pre-build binaries here](https://github.com/aurc/loggo/releases/latest)!
+Latest Release [pre-build binaries here](https://github.com/marawanxmamdouh/loggo/releases/latest)!
 
 - **Windows 11**:
     
-   Download a `tar.gz` file from [pre-build binaries](https://github.com/aurc/loggo/releases/latest) that match your platform:
+   Download a `tar.gz` file from [pre-build binaries](https://github.com/marawanxmamdouh/loggo/releases/latest) that match your platform:
    - Most of PCs will be `amd64`, so file format will be like `loggo_x.y.z_windows_amd64.tar.gz`. Note: *If you own a Surface Pro, or
 virtualised windows on a Mac M series, you'll probably want to grab the `arm64` version.*
    - Open a terminal window (`cmd.exe`) and issue the following command in the folder you downloaded the file:
@@ -289,4 +289,4 @@ prior the first release.
 ## Feedback
 
 Please let us know your **thoughts**, **feature requests** and **bug reports**! Use the issues report
-link here: https://github.com/aurc/loggo/issues
+link here: https://github.com/marawanxmamdouh/loggo/issues

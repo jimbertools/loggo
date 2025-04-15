@@ -22,11 +22,31 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/cmd"
-
-var version string
+import (
+	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/marawanxmamdouh/loggo/loggo"
+)
 
 func main() {
-	cmd.BuildVersion = version
-	cmd.Initiate()
+	app := loggo.NewApp("")
+	view := loggo.NewTemplateItemView(app, &config.Key{
+		Type: config.TypeString,
+		ColorWhen: []config.ColorWhen{
+			{
+				MatchValue: "SOME String",
+				Color: config.Color{
+					Foreground: "white",
+					Background: "purple",
+				},
+			},
+			{
+				MatchValue: "Some String",
+				Color: config.Color{
+					Foreground: "white",
+					Background: "red",
+				},
+			},
+		},
+	}, nil, nil)
+	app.Run(view)
 }

@@ -22,11 +22,28 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/cmd"
+import (
+	"os"
 
-var version string
+	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/marawanxmamdouh/loggo/reader"
+	"github.com/marawanxmamdouh/loggo/uitest/helper"
+)
 
 func main() {
-	cmd.BuildVersion = version
-	cmd.Initiate()
+	inputChan := make(chan string, 1)
+	rd := reader.MakeReader("", inputChan)
+	oldStdIn := os.Stdin
+	defer func() {
+		os.Stdin = oldStdIn
+	}()
+	r, w, _ := os.Pipe()
+	os.Stdin = r
+	go func() {
+		helper.JsonGenerator(w)
+	}()
+
+	_ = rd.StreamInto()
+	app := loggo.NewLoggoApp(rd, "")
+	app.Run()
 }

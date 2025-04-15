@@ -23,9 +23,9 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"github.com/aurc/loggo/internal/config"
-	"github.com/aurc/loggo/internal/loggo"
-	"github.com/aurc/loggo/internal/util"
+	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/marawanxmamdouh/loggo/util"
 	"github.com/spf13/cobra"
 )
 

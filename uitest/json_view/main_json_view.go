@@ -22,11 +22,21 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/cmd"
+import (
+	"os"
 
-var version string
+	"github.com/marawanxmamdouh/loggo/loggo"
+)
 
 func main() {
-	cmd.BuildVersion = version
-	cmd.Initiate()
+	app := loggo.NewApp("")
+	view := loggo.NewJsonView(app, true, nil, nil)
+
+	b, err := os.ReadFile("testdata/test1.json")
+	if err != nil {
+		panic(err)
+	}
+	view.SetJson(b)
+
+	app.Run(view)
 }

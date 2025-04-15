@@ -22,11 +22,17 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/cmd"
-
-var version string
+import (
+	"github.com/gdamore/tcell/v2"
+	"github.com/marawanxmamdouh/loggo/color"
+	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/rivo/tview"
+)
 
 func main() {
-	cmd.BuildVersion = version
-	cmd.Initiate()
+	app := loggo.NewApp("config-sample/gcp.yaml")
+	main := tview.NewFlex().SetDirection(tview.FlexRow)
+	main.AddItem(loggo.NewFilterView(app, nil), 4, 1, true).
+		AddItem(loggo.NewHorizontalSeparator(color.FieldStyle, loggo.LineHThick, "test", tcell.ColorYellow), 1, 2, false)
+	app.Run(main)
 }

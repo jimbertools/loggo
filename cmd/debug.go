@@ -23,8 +23,8 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"github.com/aurc/loggo/internal/loggo"
-	"github.com/aurc/loggo/internal/reader"
+	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/marawanxmamdouh/loggo/reader"
 	"github.com/spf13/cobra"
 )
 

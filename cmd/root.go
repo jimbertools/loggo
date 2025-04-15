@@ -25,7 +25,7 @@ package cmd
 import (
 	"os"
 
-	"github.com/aurc/loggo/internal/loggo"
+	"github.com/marawanxmamdouh/loggo/loggo"
 	"github.com/spf13/cobra"
 )
 

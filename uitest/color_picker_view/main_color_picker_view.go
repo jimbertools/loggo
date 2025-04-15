@@ -22,11 +22,16 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/cmd"
-
-var version string
+import "github.com/marawanxmamdouh/loggo/loggo"
 
 func main() {
-	cmd.BuildVersion = version
-	cmd.Initiate()
+	app := loggo.NewApp("")
+	view := loggo.NewColorPickerView(app, "Select Color",
+		func(c string) {
+		}, func() {
+			app.Stop()
+		}, func() {
+			app.Stop()
+		})
+	app.Run(view)
 }
