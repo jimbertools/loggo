@@ -137,15 +137,41 @@ func (k *Key) ExtractValue(m map[string]interface{}) string {
 			return val
 		}
 		if i == len(kList)-1 {
-			if v, ok := lv.(map[string]interface{}); ok {
-				b, err := json.Marshal(v)
-				if err == nil {
-					return string(b)
+			// For the final value, always try to marshal to JSON for consistent formatting
+			b, err := json.Marshal(lv)
+			if err == nil {
+				// Remove surrounding quotes for simple values
+				jsonStr := string(b)
+				if len(jsonStr) > 0 && jsonStr[0] == '"' && jsonStr[len(jsonStr)-1] == '"' {
+					return jsonStr[1 : len(jsonStr)-1]
 				}
+				return jsonStr
 			}
 			return fmt.Sprintf("%+v", lv)
 		}
-		level = lv.(map[string]interface{})
+		// Check if the current level is a map before casting
+		if nextLevel, ok := lv.(map[string]interface{}); ok {
+			level = nextLevel
+		} else if arr, ok := lv.([]interface{}); ok {
+			// If it's an array, convert it to a JSON string and return
+			b, err := json.Marshal(arr)
+			if err == nil {
+				return string(b)
+			}
+			return fmt.Sprintf("%+v", arr)
+		} else {
+			// If it's neither a map nor an array, just return the string representation
+			b, err := json.Marshal(lv)
+			if err == nil {
+				// Remove surrounding quotes for simple values
+				jsonStr := string(b)
+				if len(jsonStr) > 0 && jsonStr[0] == '"' && jsonStr[len(jsonStr)-1] == '"' {
+					return jsonStr[1 : len(jsonStr)-1]
+				}
+				return jsonStr
+			}
+			return fmt.Sprintf("%+v", lv)
+		}
 	}
 	return val
 }

@@ -395,7 +395,7 @@ func (j *JsonView) setJson() *JsonView {
 			text.WriteString(j.newLine())
 			i++
 		}
-		text.WriteString("}" + j.newLine())
+		text.WriteString("}")
 		markedText := text.String()
 		j.textView.SetText(markedText)
 	}
@@ -418,7 +418,11 @@ func (j *JsonView) processNode(k, v interface{}, indent string, text *strings.Bu
 	case string:
 		j.processString(text, v, "")
 	case map[string]interface{}:
-		j.processObject(text, v, j.indent+indent)
+		if last {
+			j.processObject(text, v, j.indent+"")
+		} else {
+			j.processObject(text, v, j.computeIndent(indent[len(j.indent):])+"")
+		}
 	case []interface{}:
 		j.processArray(text, tp, j.indent+indent)
 	}
@@ -428,11 +432,16 @@ func (j *JsonView) processNode(k, v interface{}, indent string, text *strings.Bu
 }
 
 func (j *JsonView) processArray(text *strings.Builder, tp []interface{}, indent string) {
+	if len(tp) == 0 {
+		text.WriteString("[]")
+		return
+	}
+
 	text.WriteString("[" + j.newLine())
 	kc := len(tp)
 	i := 0
 	for _, n := range tp {
-		j.processArrayItem(n, indent+j.indent, text, i+1 == kc)
+		j.processArrayItem(n, indent, text, i+1 == kc)
 		text.WriteString(j.newLine())
 		i++
 	}
@@ -440,6 +449,11 @@ func (j *JsonView) processArray(text *strings.Builder, tp []interface{}, indent 
 }
 
 func (j *JsonView) processObject(text *strings.Builder, val interface{}, indent string) {
+	if len(val.(map[string]interface{})) == 0 {
+		text.WriteString("{}")
+		return
+	}
+
 	text.WriteString(color.ClString)
 	text.WriteString(fmt.Sprintf(`[white::]{%s`, j.newLine()))
 
@@ -454,7 +468,7 @@ func (j *JsonView) processObject(text *strings.Builder, val interface{}, indent 
 		text.WriteString(j.newLine())
 		i++
 	}
-	text.WriteString(indent[len(j.indent):] + `}`)
+	text.WriteString(j.computeIndent(indent+j.indent) + `}`)
 }
 
 func (j *JsonView) processString(text *strings.Builder, v interface{}, indent string) {
@@ -479,13 +493,15 @@ func (j *JsonView) processNumeric(text *strings.Builder, v interface{}, indent s
 }
 
 func (j *JsonView) processArrayItem(v interface{}, indent string, text *strings.Builder, last bool) {
+	text.WriteString(j.computeIndent(indent + j.indent))
+
 	switch tp := v.(type) {
 	case int,
 		float64,
 		bool:
-		j.processNumeric(text, v, indent)
+		j.processNumeric(text, v, "")
 	case string:
-		j.processString(text, v, indent)
+		j.processString(text, v, "")
 	case map[string]interface{}:
 		j.processObject(text, v, indent)
 	case []interface{}:
