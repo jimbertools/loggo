@@ -6,7 +6,7 @@
 ![downloads](https://img.shields.io/github/downloads/aurc/loggo/total)
 ## Introduction
 
-*For the impatient, go to [Getting Started](#getting-started)*
+*For the impatient, go to [Getting Started](#getting-started) or [Using as a Package](#using-as-a-package)*
 <p align="center">
 <img src="img/loggo_sm.png">
 </p>
@@ -31,7 +31,7 @@ Stack Driver ([Google Logs](https://cloud.google.com/logging), see [GCP-Stream C
 </tr>
 </table>
 
-Loggo App leveraged [tview](https://github.com/rivo/tview/) and [tcell](https://github.com/gdamore/tcell) projects for rich Terminal User 
+Loggo App leveraged [tview](https://github.com/rivo/tview/) and [tcell](https://github.com/gdamore/tcell) projects for rich Terminal User
 Interface (TUI).
 
 ## Getting Started
@@ -61,7 +61,7 @@ go install github.com/marawanxmamdouh/loggo@latest
 ````
 
 ### Build from Source:
-Including **macOS**, build from source. 
+Including **macOS**, build from source.
 Pre-Reqs:
 - [Golang](https://go.dev/) v1.8+
 - Checkout the project from [https://github.com/marawanxmamdouh/loggo/](https://github.com/marawanxmamdouh/loggo/)
@@ -74,14 +74,14 @@ path.
 
 ### Download Pre-Compiled binary
 
-This option might be suitable for you if you don't have Home/Linux-Brew or golang 
+This option might be suitable for you if you don't have Home/Linux-Brew or golang
 readly available for you. In this case you can download a pre-compiled exectuable binary
 for the following platforms:
 
 Latest Release [pre-build binaries here](https://github.com/marawanxmamdouh/loggo/releases/latest)!
 
 - **Windows 11**:
-    
+
    Download a `tar.gz` file from [pre-build binaries](https://github.com/marawanxmamdouh/loggo/releases/latest) that match your platform:
    - Most of PCs will be `amd64`, so file format will be like `loggo_x.y.z_windows_amd64.tar.gz`. Note: *If you own a Surface Pro, or
 virtualised windows on a Mac M series, you'll probably want to grab the `arm64` version.*
@@ -91,7 +91,7 @@ virtualised windows on a Mac M series, you'll probably want to grab the `arm64` 
      ````
    - A file `loggo.exe` will be extracted to the current folder.
    - You can place this file in a directory that's on your %PATH% so the command `loggo` is accessible from anywhere.
-   - 
+   -
 - **Linux** (both arm64 and amd64 plat):
   - ubuntu:  `tar.gz` file from releases (e.g. loggo_vx.y.z_linux_<plat>.tar.gz)
   - debian:  `*.deb` file from releases
@@ -100,7 +100,7 @@ virtualised windows on a Mac M series, you'll probably want to grab the `arm64` 
 
 ## Using l'oGGo
 
-Loggo can be used to stream parsed logs from a persisted file and from a 
+Loggo can be used to stream parsed logs from a persisted file and from a
 piped input and also provides a tool for creating log templates.
 
 ### Some Features
@@ -168,7 +168,7 @@ tail -f <my file> | loggo stream --template <my template yaml>
 
 Note that you can pipe to anything that produces an output to the `stdin`.
 
-### `gcp-stream` Command 
+### `gcp-stream` Command
 l`oGGo natively supports GCP Logging but in order to use this feature, there are a few caveats:
 - Your personal account has the required permissions to access the logging resources.
 
@@ -190,9 +190,9 @@ Usage:
 
 Flags:
   -p, --project string       GCP Project ID (required)
-  
+
   ------------------- Optional Below ------------------
-  
+
   -f, --filter string        Standard GCP filters
       --force-auth           Only effective if combined with gcloud flag. Force re-authentication even
                              if you may have a valid authentication file.
@@ -287,6 +287,68 @@ prior the first release.
 - Create template with keys whose name contains `/` as it uses slashes to navigate to nested json branches.
 
 ## Feedback
+
+## Using as a Package
+
+Loggo can also be used as an importable package in your Go applications. This allows you to integrate Loggo's powerful log viewing and processing capabilities directly into your applications.
+
+### Installation
+
+```
+go get github.com/marawanxmamdouh/loggo
+```
+
+### Basic Usage
+
+```go
+package main
+
+import (
+	"github.com/marawanxmamdouh/loggo/pkg"
+)
+
+func main() {
+	// Create a new loggo app that reads from a file
+	app := pkg.NewLoggoApp("path/to/logfile.log", "path/to/template.yaml")
+
+	// Run the app
+	app.Run()
+}
+```
+
+### Using the Reader Directly
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/marawanxmamdouh/loggo/pkg"
+)
+
+func main() {
+	// Create a reader that reads from stdin
+	reader := pkg.NewReader("", nil)
+
+	// Start streaming
+	err := reader.StreamInto()
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+	defer reader.Close()
+
+	// Process each line
+	for line := range reader.ChanReader() {
+		fmt.Printf("Received: %s\n", line)
+	}
+}
+```
+
+For more examples, see the `examples/` directory.
+
+---
 
 Please let us know your **thoughts**, **feature requests** and **bug reports**! Use the issues report
 link here: https://github.com/marawanxmamdouh/loggo/issues

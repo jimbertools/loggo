@@ -26,6 +26,7 @@ import (
 	"os"
 
 	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/marawanxmamdouh/loggo/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -40,6 +41,7 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Initiate() {
 	loggo.BuildVersion = BuildVersion
+	pkg.SetVersion(BuildVersion)
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

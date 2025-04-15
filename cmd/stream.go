@@ -23,8 +23,7 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/reader"
+	"github.com/marawanxmamdouh/loggo/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +33,7 @@ var streamCmd = &cobra.Command{
 	Short: "Continuously stream log input source",
 	Long: `Continuously stream log entries from an input stream such
 as the standard input (through pipe) or a input file. Note that
-if it's reading from a file, it automatically detects file 
+if it's reading from a file, it automatically detects file
 rotation and continue to stream. For example:
 
 	loggo stream --file <file-path>
@@ -42,8 +41,7 @@ rotation and continue to stream. For example:
 	Run: func(cmd *cobra.Command, args []string) {
 		fileName := cmd.Flag("file").Value.String()
 		templateFile := cmd.Flag("template").Value.String()
-		reader := reader.MakeReader(fileName, nil)
-		app := loggo.NewLoggoApp(reader, templateFile)
+		app := pkg.NewLoggoApp(fileName, templateFile)
 		app.Run()
 	},
 }

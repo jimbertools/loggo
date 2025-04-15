@@ -20,27 +20,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+// Package pkg provides the main API for using loggo as an importable package.
+package pkg
 
 import (
 	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/pkg"
-	"github.com/spf13/cobra"
+	"github.com/marawanxmamdouh/loggo/reader"
 )
 
-// streamCmd represents the stream command
-var debugCmd = &cobra.Command{
-	Use:   "debug",
-	Short: "Continuously stream l'oggo log",
-	Long: `This command aims to assist troubleshoot loggos issue and would be rarely utilised by loggo's users':
-
-	loggo debug`,
-	Run: func(cmd *cobra.Command, args []string) {
-		app := pkg.NewLoggoApp(loggo.LatestLog, "")
-		app.Run()
-	},
+// LoggoApp represents the main loggo application.
+type LoggoApp struct {
+	app *loggo.LoggoApp
 }
 
-func init() {
-	rootCmd.AddCommand(debugCmd)
+// NewLoggoApp creates a new loggo application instance.
+// If fileName is provided, it will read from that file.
+// If fileName is empty, it will read from stdin.
+// If templateFile is provided, it will use that template for rendering.
+func NewLoggoApp(fileName, templateFile string) *LoggoApp {
+	reader := reader.MakeReader(fileName, nil)
+	app := loggo.NewLoggoApp(reader, templateFile)
+	return &LoggoApp{
+		app: app,
+	}
+}
+
+// Run starts the loggo application.
+func (a *LoggoApp) Run() {
+	a.app.Run()
+}
+
+// Version returns the current version of loggo.
+func Version() string {
+	return loggo.BuildVersion
+}
+
+// SetVersion sets the version of loggo.
+func SetVersion(version string) {
+	loggo.BuildVersion = version
 }

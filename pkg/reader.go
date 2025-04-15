@@ -20,27 +20,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+package pkg
 
 import (
-	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/pkg"
-	"github.com/spf13/cobra"
+	"github.com/marawanxmamdouh/loggo/reader"
 )
 
-// streamCmd represents the stream command
-var debugCmd = &cobra.Command{
-	Use:   "debug",
-	Short: "Continuously stream l'oggo log",
-	Long: `This command aims to assist troubleshoot loggos issue and would be rarely utilised by loggo's users':
-
-	loggo debug`,
-	Run: func(cmd *cobra.Command, args []string) {
-		app := pkg.NewLoggoApp(loggo.LatestLog, "")
-		app.Run()
-	},
+// Reader is an interface for reading log streams.
+type Reader interface {
+	// StreamInto feeds the strChan channel for every streamed line.
+	StreamInto() error
+	// Close finalises and invalidates this stream reader.
+	Close()
+	// ChanReader returns the outbound channel reader
+	ChanReader() <-chan string
+	// ErrorNotifier registers a callback func that's called upon fatal streaming log.
+	ErrorNotifier(onError func(err error))
 }
 
-func init() {
-	rootCmd.AddCommand(debugCmd)
+// ReaderType represents the type of reader.
+type ReaderType = reader.Type
+
+const (
+	// TypeFile represents a file reader.
+	TypeFile = reader.TypeFile
+	// TypePipe represents a pipe reader.
+	TypePipe = reader.TypePipe
+)
+
+// NewReader creates a new reader for the given file or stdin if fileName is empty.
+func NewReader(fileName string, strChan chan string) Reader {
+	return reader.MakeReader(fileName, strChan)
 }

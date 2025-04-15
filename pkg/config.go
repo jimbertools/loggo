@@ -20,27 +20,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+package pkg
 
 import (
-	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/pkg"
-	"github.com/spf13/cobra"
+	"github.com/marawanxmamdouh/loggo/config"
 )
 
-// streamCmd represents the stream command
-var debugCmd = &cobra.Command{
-	Use:   "debug",
-	Short: "Continuously stream l'oggo log",
-	Long: `This command aims to assist troubleshoot loggos issue and would be rarely utilised by loggo's users':
-
-	loggo debug`,
-	Run: func(cmd *cobra.Command, args []string) {
-		app := pkg.NewLoggoApp(loggo.LatestLog, "")
-		app.Run()
-	},
+// Config represents a loggo configuration.
+type Config struct {
+	cfg *config.Config
 }
 
-func init() {
-	rootCmd.AddCommand(debugCmd)
+// NewConfig creates a new configuration from the given template file.
+// If templateFile is empty, it will create a default configuration.
+func NewConfig(templateFile string) (*Config, error) {
+	cfg, err := config.MakeConfig(templateFile)
+	if err != nil {
+		return nil, err
+	}
+	return &Config{
+		cfg: cfg,
+	}, nil
 }

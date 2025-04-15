@@ -20,27 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
-
-import (
-	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/pkg"
-	"github.com/spf13/cobra"
-)
-
-// streamCmd represents the stream command
-var debugCmd = &cobra.Command{
-	Use:   "debug",
-	Short: "Continuously stream l'oggo log",
-	Long: `This command aims to assist troubleshoot loggos issue and would be rarely utilised by loggo's users':
-
-	loggo debug`,
-	Run: func(cmd *cobra.Command, args []string) {
-		app := pkg.NewLoggoApp(loggo.LatestLog, "")
-		app.Run()
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(debugCmd)
-}
+// Package pkg provides the main API for using loggo as an importable package.
+//
+// Loggo is a log viewer and analyzer that can read from files or stdin.
+// It provides a rich UI for viewing and filtering logs.
+//
+// Basic usage:
+//
+//	import "github.com/marawanxmamdouh/loggo/pkg"
+//
+//	func main() {
+//		app := pkg.NewLoggoApp("path/to/logfile.log", "path/to/template.yaml")
+//		app.Run()
+//	}
+//
+// To create a custom reader:
+//
+//	reader := pkg.NewReader("path/to/logfile.log", nil)
+//	err := reader.StreamInto()
+//	if err != nil {
+//		// handle error
+//	}
+//	defer reader.Close()
+//
+//	for line := range reader.ChanReader() {
+//		// process each line
+//	}
+package pkg

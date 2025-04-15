@@ -20,27 +20,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+package main
 
 import (
-	"github.com/marawanxmamdouh/loggo/loggo"
+	"fmt"
+
 	"github.com/marawanxmamdouh/loggo/pkg"
-	"github.com/spf13/cobra"
 )
 
-// streamCmd represents the stream command
-var debugCmd = &cobra.Command{
-	Use:   "debug",
-	Short: "Continuously stream l'oggo log",
-	Long: `This command aims to assist troubleshoot loggos issue and would be rarely utilised by loggo's users':
+func main() {
+	// Create a reader that reads from stdin
+	reader := pkg.NewReader("", nil)
 
-	loggo debug`,
-	Run: func(cmd *cobra.Command, args []string) {
-		app := pkg.NewLoggoApp(loggo.LatestLog, "")
-		app.Run()
-	},
-}
+	// Start streaming
+	err := reader.StreamInto()
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+	defer reader.Close()
 
-func init() {
-	rootCmd.AddCommand(debugCmd)
+	// Process each line
+	for line := range reader.ChanReader() {
+		fmt.Printf("Received: %s\n", line)
+	}
 }
