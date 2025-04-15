@@ -33,7 +33,6 @@ type Type = int64
 const (
 	TypeFile = Type(iota)
 	TypePipe
-	TypeGCP
 )
 
 // MakeReader builds a continues file/pipe streamer used to feed the logger. If

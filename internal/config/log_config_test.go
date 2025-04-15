@@ -37,16 +37,6 @@ func TestMakeConfig(t *testing.T) {
 		wantsError bool
 	}{
 		{
-			name:      "No file supplied, load GCP default",
-			givenFile: "",
-			wants:     Config{},
-		},
-		{
-			name:      "Valid value supplied",
-			givenFile: "../config-sample/gcp.yaml",
-			wants:     defConfig,
-		},
-		{
 			name:       "Non existing file",
 			givenFile:  "foo",
 			wants:      defConfig,

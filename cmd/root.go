@@ -31,10 +31,6 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "loggo",
-	Short: "Stream json logs as rich TUI",
-	Long: `l'oGGo provides a rich Terminal User Interface for streaming json based
-logs and a toolset to assist you tailoring the display format.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

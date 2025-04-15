@@ -73,8 +73,6 @@ func (spw *SavedParamsWrapper) Print() {
 	fmt.Println()
 	fmt.Printf(`Name:     %s`, spw.Name)
 	fmt.Println()
-	fmt.Printf(`Execute:  loggo gcp-stream --params-load "%s"`, spw.Name)
-	fmt.Println()
 	fmt.Printf(`Contents:`)
 	spw.Params.Print()
 	fmt.Println()
