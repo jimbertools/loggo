@@ -38,11 +38,6 @@ func (l *LogView) keyEvents() {
 		case tcell.KeyCtrlN:
 			l.toggleSelectionMouse()
 			return nil
-		case tcell.KeyCtrlA:
-			go func() {
-				l.showAbout()
-			}()
-			return nil
 		case tcell.KeyCtrlT:
 			l.makeLayoutsWithTemplateView()
 			return nil

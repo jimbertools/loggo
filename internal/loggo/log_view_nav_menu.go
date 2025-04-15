@@ -139,13 +139,6 @@ func (l *LogView) populateMenu() {
 	//////////////////////////////////////////////////////////////////
 	l.navMenu.
 		AddItem(NewHorizontalSeparator(sepStyle, LineHThick, "Application", sepForeground), 1, 2, false).
-		AddItem(l.textViewMenuControl(tview.NewTextView().
-			SetDynamicColors(true).SetRegions(true).
-			SetText(aboutMenu), func() {
-			go func() {
-				l.showAbout()
-			}()
-		}), 1, 2, false).
 		AddItem(l.textViewMenuControl(tview.NewTextView().SetRegions(true).
 			SetDynamicColors(true).
 			SetText(quitMenu), func() {
