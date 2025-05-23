@@ -25,6 +25,7 @@ package loggo
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -34,6 +35,12 @@ import (
 	"github.com/marawanxmamdouh/loggo/config"
 	"github.com/rivo/tview"
 )
+
+var bytePool = sync.Pool{
+	New: func() interface{} {
+		return make([]byte, 0, 1024) // Initial capacity 1KB
+	},
+}
 
 func (l *LogView) read() {
 	go func() {
@@ -62,21 +69,29 @@ func (l *LogView) read() {
 			l.keyMap = l.config.KeyMap()
 		}
 
+		// Set initial following state
 		l.isFollowing = true
 		l.updateLineView()
 
 		// Process logs line by line
-		for t := range l.chanReader.ChanReader() {
-			if len(t) == 0 {
+		for data := range l.chanReader.ChanReader() {
+			if len(data) == 0 {
 				continue
 			}
 
+			// Get a buffer from pool and copy data
+			buf := bytePool.Get().([]byte)
+			buf = append(buf[:0], data...) // Reset and copy
+
 			// Parse the log line
 			m := make(map[string]interface{})
-			if err := json.Unmarshal([]byte(t), &m); err != nil {
+			if err := json.Unmarshal(buf, &m); err != nil {
 				m[config.ParseErr] = err.Error()
-				m[config.TextPayload] = t
+				m[config.TextPayload] = string(buf) // Only convert to string when needed
 			}
+
+			// Return buffer to pool
+			bytePool.Put(buf)
 
 			// Add to inSlice with lock
 			l.filterLock.Lock()
@@ -87,7 +102,7 @@ func (l *LogView) read() {
 			select {
 			case exp := <-l.filterChannel:
 				l.filterLock.Lock()
-				l.finSlice = l.finSlice[:0] // Clear filtered slice
+				l.finSlice = l.finSlice[:0]
 				l.globalCount = 0
 				l.filterLock.Unlock()
 				l.filterLine(exp, len(l.inSlice)-1)
@@ -96,8 +111,8 @@ func (l *LogView) read() {
 				l.filterLine(nil, len(l.inSlice)-1)
 			}
 
-			// Update UI if following
-			if l.isFollowing {
+			// Batch UI updates
+			if l.isFollowing && len(l.inSlice)%10 == 0 { // Update every 10 lines
 				l.app.app.QueueUpdate(func() {
 					l.table.ScrollToEnd()
 				})
