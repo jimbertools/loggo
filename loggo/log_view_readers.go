@@ -55,21 +55,52 @@ func (l *LogView) read() {
 				tview.NewButton("[darkred::bu]Q[-::-]uit").SetSelectedFunc(func() {
 					l.app.Stop()
 				}))
-		} else {
-			if len(l.config.LastSavedName) > 0 {
-				l.keyMap = l.config.KeyMap()
+			return
+		}
+
+		if len(l.config.LastSavedName) > 0 {
+			l.keyMap = l.config.KeyMap()
+		}
+
+		l.isFollowing = true
+		l.updateLineView()
+
+		// Process logs line by line
+		for t := range l.chanReader.ChanReader() {
+			if len(t) == 0 {
+				continue
 			}
-			for {
-				t := <-l.chanReader.ChanReader()
-				if len(t) > 0 {
-					m := make(map[string]interface{})
-					err := json.Unmarshal([]byte(t), &m)
-					if err != nil {
-						m[config.ParseErr] = err.Error()
-						m[config.TextPayload] = t
-					}
-					l.inSlice = append(l.inSlice, m)
-				}
+
+			// Parse the log line
+			m := make(map[string]interface{})
+			if err := json.Unmarshal([]byte(t), &m); err != nil {
+				m[config.ParseErr] = err.Error()
+				m[config.TextPayload] = t
+			}
+
+			// Add to inSlice with lock
+			l.filterLock.Lock()
+			l.inSlice = append(l.inSlice, m)
+			l.filterLock.Unlock()
+
+			// Apply filter if needed
+			select {
+			case exp := <-l.filterChannel:
+				l.filterLock.Lock()
+				l.finSlice = l.finSlice[:0] // Clear filtered slice
+				l.globalCount = 0
+				l.filterLock.Unlock()
+				l.filterLine(exp, len(l.inSlice)-1)
+			default:
+				// No filter change, just process the new line
+				l.filterLine(nil, len(l.inSlice)-1)
+			}
+
+			// Update UI if following
+			if l.isFollowing {
+				l.app.app.QueueUpdate(func() {
+					l.table.ScrollToEnd()
+				})
 			}
 		}
 	}()
