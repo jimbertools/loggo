@@ -23,7 +23,6 @@ THE SOFTWARE.
 package config
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 )
@@ -126,22 +125,12 @@ func (p preBakedRule) Keys() []string {
 
 func extractKeys2ndDepth(m map[string]interface{}) []string {
 	keys := make([]string, 0)
-	for k, v := range m {
+	for k, _ := range m {
 		if strings.Contains(k, "/") {
 			continue
 		}
-		if vk, ok := v.(map[string]interface{}); ok &&
-			k != "http_request" &&
-			k != "labels" {
-			for k2 := range vk {
-				if strings.Contains(k2, "/") {
-					continue
-				}
-				keys = append(keys, fmt.Sprintf(`%s/%s`, k, k2))
-			}
-		} else {
-			keys = append(keys, k)
-		}
+		// Only include top-level keys, don't process nested objects
+		keys = append(keys, k)
 	}
 	return keys
 }
