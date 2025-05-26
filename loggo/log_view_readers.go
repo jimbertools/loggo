@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Aurelio Calegari, et al.
+Copyright 2022 Aurelio Calegari, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,8 @@ package loggo
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -40,6 +42,108 @@ var bytePool = sync.Pool{
 	New: func() interface{} {
 		return make([]byte, 0, 1024) // Initial capacity 1KB
 	},
+}
+
+// LogEntry represents a structured log entry parsed from plain text
+type LogEntry struct {
+	Timestamp string      `json:"timestamp"`
+	Level     string      `json:"level"`
+	File      string      `json:"file"`
+	Line      int         `json:"line"`
+	Message   string      `json:"message"`
+	Data      interface{} `json:"data,omitempty"`
+	ParseErr  string      `json:"parse_err,omitempty"`
+}
+
+// ToMap converts a LogEntry to a map[string]interface{} for compatibility with existing code
+func (le *LogEntry) ToMap() map[string]interface{} {
+	m := make(map[string]interface{})
+
+	m["timestamp"] = le.Timestamp
+	m["level"] = le.Level
+	m["file"] = le.File
+	m["line"] = le.Line
+	m["message"] = le.Message
+
+	// Add Data fields directly to the map
+	if le.Data != nil {
+		m["data"] = le.Data
+	}
+
+	// Add parse error if exists
+	if le.ParseErr != "" {
+		m[config.ParseErr] = le.ParseErr
+	}
+
+	return m
+}
+
+// parseTextLogLine parses a text log line with the format:
+// timestamp ; level ; file ; line ; message ;;; data
+func parseTextLogLine(line []byte) (map[string]interface{}, error) {
+	logEntry := &LogEntry{}
+	lineStr := string(line)
+
+	// Check if the log line is in JSON format first
+	var jsonMap map[string]interface{}
+	if err := json.Unmarshal(line, &jsonMap); err == nil {
+		// This is a valid JSON log, return it directly
+		return jsonMap, nil
+	}
+
+	// Try to parse as text log format
+	// First, find the data section which starts with ";;;"
+	parts := strings.SplitN(lineStr, ";;;", 2)
+	mainSection := parts[0]
+	var dataSection string
+	if len(parts) > 1 {
+		dataSection = strings.TrimSpace(parts[1])
+	}
+
+	// Parse main section (fields separated by ";")
+	fields := strings.Split(mainSection, ";")
+	if len(fields) < 5 {
+		return map[string]interface{}{
+			config.ParseErr:    "Invalid text log format: not enough fields",
+			config.TextPayload: lineStr,
+		}, fmt.Errorf("invalid text log format: not enough fields")
+	}
+
+	// Assign fields to logEntry
+	logEntry.Timestamp = strings.TrimSpace(fields[0])
+	logEntry.Level = strings.TrimSpace(fields[1])
+	logEntry.File = strings.TrimSpace(fields[2])
+
+	// Parse line number
+	lineNum, err := strconv.Atoi(strings.TrimSpace(fields[3]))
+	if err == nil {
+		logEntry.Line = lineNum
+	} else {
+		logEntry.ParseErr = fmt.Sprintf("Invalid line number: %s", err.Error())
+	}
+
+	logEntry.Message = strings.TrimSpace(fields[4])
+
+	// Parse data section as JSON if it exists
+	if dataSection != "" {
+		var dataValue interface{}
+		if err := json.Unmarshal([]byte(dataSection), &dataValue); err == nil {
+			logEntry.Data = dataValue
+		} else {
+			// If data section is not valid JSON, store the error and raw text
+			logEntry.ParseErr = fmt.Sprintf("Invalid JSON in data section: %s", err.Error())
+			// Store the raw text as is
+			logEntry.Data = dataSection
+		}
+	}
+
+	return logEntry.ToMap(), nil
+}
+
+// ParseTextLogLine is the exported version of parseTextLogLine for use in examples and tests
+// It parses a text log line with the format: timestamp ; level ; file ; line ; message ;;; data
+func ParseTextLogLine(line []byte) (map[string]interface{}, error) {
+	return parseTextLogLine(line)
 }
 
 func (l *LogView) read() {
@@ -84,8 +188,9 @@ func (l *LogView) read() {
 			buf = append(buf[:0], data...) // Reset and copy
 
 			// Parse the log line
-			m := make(map[string]interface{})
-			if err := json.Unmarshal(buf, &m); err != nil {
+			m, err := parseTextLogLine(buf)
+			if err != nil {
+				m = make(map[string]interface{})
 				m[config.ParseErr] = err.Error()
 				m[config.TextPayload] = string(buf) // Only convert to string when needed
 			}
