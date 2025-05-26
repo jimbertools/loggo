@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Aurelio Calegari, et al.
+Copyright 2022 Aurelio Calegari, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@ type Type = int64
 const (
 	TypeFile = Type(iota)
 	TypePipe
+	TypeMultiFile
 )
 
 // MakeReader builds a continues file/pipe streamer used to feed the logger. If
@@ -56,6 +57,23 @@ func MakeReader(fileName string, strChan chan string) Reader {
 			readerType: TypePipe,
 		},
 	}
+}
+
+func MakeMultiReader(fileNames []string, strChan chan string) Reader {
+	if len(fileNames) == 0 {
+		return &readPipeStream{
+			reader: reader{
+				strChan:    strChan,
+				readerType: TypePipe,
+			},
+		}
+	}
+
+	if len(fileNames) == 1 {
+		return MakeReader(fileNames[0], strChan)
+	}
+
+	return MakeMultiFileReader(fileNames, strChan)
 }
 
 func (s *reader) ChanReader() <-chan string {

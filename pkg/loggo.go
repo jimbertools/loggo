@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Aurelio Calegari, et al.
+Copyright 2022 Aurelio Calegari, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,13 +33,17 @@ type LoggoApp struct {
 	app *loggo.LoggoApp
 }
 
-// NewLoggoApp creates a new loggo application instance.
-// If fileName is provided, it will read from that file.
-// If fileName is empty, it will read from stdin.
-// If templateFile is provided, it will use that template for rendering.
 func NewLoggoApp(fileName, templateFile string) *LoggoApp {
-	reader := reader.MakeReader(fileName, nil)
-	app := loggo.NewLoggoApp(reader, templateFile)
+	myReader := reader.MakeReader(fileName, nil)
+	app := loggo.NewLoggoApp(myReader, templateFile)
+	return &LoggoApp{
+		app: app,
+	}
+}
+
+func NewMultiFileLogApp(fileNames []string, templateFile string) *LoggoApp {
+	myReader := reader.MakeMultiReader(fileNames, nil)
+	app := loggo.NewLoggoApp(myReader, templateFile)
 	return &LoggoApp{
 		app: app,
 	}

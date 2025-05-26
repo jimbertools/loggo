@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Aurelio Calegari, et al.
+Copyright 2022 Aurelio Calegari, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,14 +41,11 @@ type Reader interface {
 // ReaderType represents the type of reader.
 type ReaderType = reader.Type
 
-const (
-	// TypeFile represents a file reader.
-	TypeFile = reader.TypeFile
-	// TypePipe represents a pipe reader.
-	TypePipe = reader.TypePipe
-)
-
 // NewReader creates a new reader for the given file or stdin if fileName is empty.
 func NewReader(fileName string, strChan chan string) Reader {
 	return reader.MakeReader(fileName, strChan)
+}
+
+func NewMultiReader(fileNames []string, strChan chan string) Reader {
+	return reader.MakeMultiReader(fileNames, strChan)
 }
