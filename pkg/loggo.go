@@ -28,12 +28,11 @@ import (
 	"github.com/marawanxmamdouh/loggo/reader"
 )
 
-// LoggoApp represents the main loggo application.
 type LoggoApp struct {
 	app *loggo.LoggoApp
 }
 
-func NewLoggoApp(fileName, templateFile string) *LoggoApp {
+func NewLogApp(fileName, templateFile string) *LoggoApp {
 	myReader := reader.MakeReader(fileName, nil)
 	app := loggo.NewLoggoApp(myReader, templateFile)
 	return &LoggoApp{
@@ -52,14 +51,4 @@ func NewMultiFileLogApp(fileNames []string, templateFile string) *LoggoApp {
 // Run starts the loggo application.
 func (a *LoggoApp) Run() {
 	a.app.Run()
-}
-
-// Version returns the current version of loggo.
-func Version() string {
-	return loggo.BuildVersion
-}
-
-// SetVersion sets the version of loggo.
-func SetVersion(version string) {
-	loggo.BuildVersion = version
 }
