@@ -52,6 +52,18 @@ type Loggo interface {
 	PopView()
 }
 
+func StartLogViewer(fileName, templateFile string) {
+	myReader := reader.MakeReader(fileName, nil)
+	app := NewLoggoApp(myReader, templateFile)
+	app.Run()
+}
+
+func StartMultiFileLogViewer(fileNames []string, templateFile string) {
+	myReader := reader.MakeMultiReader(fileNames, nil)
+	app := NewLoggoApp(myReader, templateFile)
+	app.Run()
+}
+
 func NewLoggoApp(reader reader.Reader, configFile string) *LoggoApp {
 	app := NewApp(configFile)
 	lapp := &LoggoApp{
