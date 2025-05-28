@@ -29,8 +29,8 @@ import (
 	"time"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/color"
-	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/jimbertools/loggo/color"
+	"github.com/jimbertools/loggo/config"
 	"github.com/rivo/tview"
 )
 

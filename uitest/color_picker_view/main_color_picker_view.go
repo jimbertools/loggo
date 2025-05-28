@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/marawanxmamdouh/loggo/loggo"
+import "github.com/jimbertools/loggo/loggo"
 
 func main() {
 	app := loggo.NewApp("")

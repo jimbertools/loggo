@@ -24,8 +24,8 @@ package main
 
 import (
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/color"
-	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/jimbertools/loggo/color"
+	"github.com/jimbertools/loggo/loggo"
 	"github.com/rivo/tview"
 )
 

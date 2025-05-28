@@ -31,7 +31,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/marawanxmamdouh/loggo/uitest/helper"
+	"github.com/jimbertools/loggo/uitest/helper"
 )
 
 const datelayout = "2006-01-02T15:04:05-0700"

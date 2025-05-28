@@ -29,7 +29,7 @@ import (
 
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
-	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/jimbertools/loggo/config"
 )
 
 type LogicalOperator int

@@ -26,7 +26,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/marawanxmamdouh/loggo/util"
+	"github.com/jimbertools/loggo/util"
 )
 
 const (

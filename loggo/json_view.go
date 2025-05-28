@@ -30,8 +30,8 @@ import (
 
 	"github.com/atotto/clipboard"
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/color"
-	"github.com/marawanxmamdouh/loggo/search"
+	"github.com/jimbertools/loggo/color"
+	"github.com/jimbertools/loggo/search"
 	"github.com/rivo/tview"
 )
 

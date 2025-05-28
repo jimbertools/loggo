@@ -23,8 +23,8 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/marawanxmamdouh/loggo/config"
-	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/jimbertools/loggo/config"
+	"github.com/jimbertools/loggo/loggo"
 )
 
 func main() {

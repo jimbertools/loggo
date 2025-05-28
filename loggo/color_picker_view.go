@@ -27,7 +27,7 @@ import (
 	"sort"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/color"
+	"github.com/jimbertools/loggo/color"
 	"github.com/rivo/tview"
 )
 

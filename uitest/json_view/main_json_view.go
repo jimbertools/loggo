@@ -25,7 +25,7 @@ package main
 import (
 	"os"
 
-	"github.com/marawanxmamdouh/loggo/loggo"
+	"github.com/jimbertools/loggo/loggo"
 )
 
 func main() {

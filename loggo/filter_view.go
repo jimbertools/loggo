@@ -26,12 +26,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/marawanxmamdouh/loggo/char"
+	"github.com/jimbertools/loggo/char"
 
-	"github.com/marawanxmamdouh/loggo/filter"
+	"github.com/jimbertools/loggo/filter"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/color"
+	"github.com/jimbertools/loggo/color"
 	"github.com/rivo/tview"
 )
 

@@ -29,7 +29,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/marawanxmamdouh/loggo/char"
+	"github.com/jimbertools/loggo/char"
 	log "github.com/sirupsen/logrus"
 )
 

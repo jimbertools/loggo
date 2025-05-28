@@ -25,9 +25,9 @@ package main
 import (
 	"os"
 
-	"github.com/marawanxmamdouh/loggo/loggo"
-	"github.com/marawanxmamdouh/loggo/reader"
-	"github.com/marawanxmamdouh/loggo/uitest/helper"
+	"github.com/jimbertools/loggo/loggo"
+	"github.com/jimbertools/loggo/reader"
+	"github.com/jimbertools/loggo/uitest/helper"
 )
 
 func main() {

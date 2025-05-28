@@ -24,9 +24,9 @@ package loggo
 
 import (
 	"github.com/gdamore/tcell/v2"
-	"github.com/marawanxmamdouh/loggo/config"
-	"github.com/marawanxmamdouh/loggo/reader"
-	"github.com/marawanxmamdouh/loggo/util"
+	"github.com/jimbertools/loggo/config"
+	"github.com/jimbertools/loggo/reader"
+	"github.com/jimbertools/loggo/util"
 	"github.com/rivo/tview"
 )
 

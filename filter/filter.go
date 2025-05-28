@@ -28,7 +28,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/jimbertools/loggo/config"
 )
 
 type Operation string

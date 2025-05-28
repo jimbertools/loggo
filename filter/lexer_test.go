@@ -26,7 +26,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/marawanxmamdouh/loggo/config"
+	"github.com/jimbertools/loggo/config"
 	"github.com/stretchr/testify/assert"
 )
 
