@@ -1,5 +1,5 @@
 /*
-Copyright 2022 Aurelio Calegari, et al.
+Copyright © 2022 Aurelio Calegari, et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -138,37 +138,6 @@ func (k *Key) ExtractValue(m map[string]interface{}) string {
 		}
 		if i == len(kList)-1 {
 			// For the final value, always try to marshal to JSON for consistent formatting
-			if k.Name == "data" {
-				// Special handling for data field
-				switch v := lv.(type) {
-				case []interface{}:
-					// Format arrays in a readable way instead of raw JSON
-					if len(v) == 0 {
-						return "[]"
-					}
-					if len(v) == 1 {
-						// For single element arrays, just show the element
-						elem := v[0]
-						if str, ok := elem.(string); ok {
-							return str
-						}
-						b, _ := json.Marshal(elem)
-						return string(b)
-					}
-					// For multi-element arrays, join with commas
-					var elements []string
-					for _, elem := range v {
-						if str, ok := elem.(string); ok {
-							elements = append(elements, str)
-						} else {
-							b, _ := json.Marshal(elem)
-							elements = append(elements, string(b))
-						}
-					}
-					return strings.Join(elements, ", ")
-				}
-			}
-
 			b, err := json.Marshal(lv)
 			if err == nil {
 				// Remove surrounding quotes for simple values
