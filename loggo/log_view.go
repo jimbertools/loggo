@@ -28,13 +28,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jimbertools/loggo/filter"
-
-	"github.com/jimbertools/loggo/reader"
-
 	"github.com/gdamore/tcell/v2"
 	"github.com/jimbertools/loggo/color"
 	"github.com/jimbertools/loggo/config"
+	"github.com/jimbertools/loggo/filter"
+	"github.com/jimbertools/loggo/reader"
 	"github.com/rivo/tview"
 )
 
@@ -79,6 +77,7 @@ func NewLogReader(app *LoggoApp, reader reader.Reader) *LogView {
 		hideFilter:    true,
 		isFollowing:   true,
 	}
+
 	lv.makeUIComponents()
 	lv.makeLayouts()
 	reader.ErrorNotifier(func(err error) {
@@ -106,10 +105,6 @@ func NewLogReader(app *LoggoApp, reader reader.Reader) *LogView {
 				lv.app.DismissModal(lv.table)
 			}))
 	})
-
-	go func() {
-
-	}()
 
 	lv.read()
 	lv.filter()
