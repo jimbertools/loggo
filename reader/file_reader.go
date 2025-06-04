@@ -32,11 +32,21 @@ type fileStream struct {
 	reader
 	fileName string
 	tail     *tail.Tail
+	offset   int64
 }
 
 func (s *fileStream) StreamInto() error {
 	var err error
-	s.tail, err = tail.TailFile(s.fileName, tail.Config{Follow: true, Poll: true})
+	config := tail.Config{
+		Follow: true,
+		Poll:   true,
+	}
+
+	if s.offset > 0 {
+		config.Location = &tail.SeekInfo{Whence: 0, Offset: s.offset}
+	}
+
+	s.tail, err = tail.TailFile(s.fileName, config)
 	if err != nil {
 		return err
 	}

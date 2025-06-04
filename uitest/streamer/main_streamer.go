@@ -8,7 +8,7 @@ import (
 
 func main() {
 	streamReceiver := make(chan string, 1)
-	streamReader := reader.MakeReader("", streamReceiver)
+	streamReader := reader.MakeReader("")
 	go streamReader.StreamInto()
 	for {
 		line, ok := <-streamReceiver

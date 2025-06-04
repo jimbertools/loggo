@@ -31,8 +31,7 @@ import (
 )
 
 func main() {
-	inputChan := make(chan string, 1)
-	rd := reader.MakeReader("", inputChan)
+	rd := reader.MakeReader("")
 	oldStdIn := os.Stdin
 	defer func() {
 		os.Stdin = oldStdIn

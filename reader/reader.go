@@ -30,6 +30,25 @@ type reader struct {
 
 type Type = int64
 
+type Option func(*readerConfig)
+
+type readerConfig struct {
+	strChan chan string
+	offset  int64
+}
+
+func WithStrChan(strChan chan string) Option {
+	return func(c *readerConfig) {
+		c.strChan = strChan
+	}
+}
+
+func WithOffset(offset int64) Option {
+	return func(c *readerConfig) {
+		c.offset = offset
+	}
+}
+
 const (
 	TypeFile = Type(iota)
 	TypePipe
@@ -38,22 +57,30 @@ const (
 
 // MakeReader builds a continues file/pipe streamer used to feed the logger. If
 // fileName is not provided, it will attempt to consume the input from the stdin.
-func MakeReader(fileName string, strChan chan string) Reader {
-	if strChan == nil {
-		strChan = make(chan string, 1)
+func MakeReader(fileName string, opts ...Option) Reader {
+	c := readerConfig{
+		strChan: make(chan string, 1),
+		offset:  0,
 	}
+
+	for _, opt := range opts {
+		opt(&c)
+	}
+
 	if len(fileName) > 0 {
 		return &fileStream{
 			reader: reader{
-				strChan:    strChan,
+				strChan:    c.strChan,
 				readerType: TypeFile,
 			},
 			fileName: fileName,
+			offset:   c.offset,
 		}
 	}
+
 	return &readPipeStream{
 		reader: reader{
-			strChan:    strChan,
+			strChan:    c.strChan,
 			readerType: TypePipe,
 		},
 	}
@@ -70,7 +97,7 @@ func MakeMultiReader(fileNames []string, strChan chan string) Reader {
 	}
 
 	if len(fileNames) == 1 {
-		return MakeReader(fileNames[0], strChan)
+		return MakeReader(fileNames[0])
 	}
 
 	return MakeMultiFileReader(fileNames, strChan)

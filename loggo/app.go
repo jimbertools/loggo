@@ -30,7 +30,25 @@ import (
 	"github.com/rivo/tview"
 )
 
-var BuildVersion string
+type ViewerOption func(*viewerConfig)
+
+type viewerConfig struct {
+	templateFile string
+	offset       int64
+}
+
+func WithTemplate(templateFile string) ViewerOption {
+	return func(c *viewerConfig) {
+		c.templateFile = templateFile
+	}
+}
+
+// WithOffset specifies the offset to start reading from
+func WithOffset(offset int64) ViewerOption {
+	return func(c *viewerConfig) {
+		c.offset = offset
+	}
+}
 
 type LoggoApp struct {
 	appScaffold
@@ -52,9 +70,15 @@ type Loggo interface {
 	PopView()
 }
 
-func StartLogViewer(fileName, templateFile string) {
-	myReader := reader.MakeReader(fileName, nil)
-	app := NewLoggoApp(myReader, templateFile)
+func StartLogViewer(fileName string, opts ...ViewerOption) {
+	c := viewerConfig{}
+
+	for _, opt := range opts {
+		opt(&c)
+	}
+
+	myReader := reader.MakeReader(fileName, reader.WithOffset(c.offset))
+	app := NewLoggoApp(myReader, c.templateFile)
 	app.Run()
 }
 
