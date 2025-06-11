@@ -57,6 +57,7 @@ type LogView struct {
 	inSlice            []map[string]interface{}
 	finSlice           []map[string]interface{}
 	filterChannel      chan *filter.Expression
+	currentFilter      *filter.Expression
 	filterLock         sync.RWMutex
 	globalCount        int64
 	isFollowing        bool

@@ -96,18 +96,8 @@ func (l *LogView) read() {
 			l.inSlice = append(l.inSlice, m)
 			l.filterLock.Unlock()
 
-			// Apply filter if needed
-			select {
-			case exp := <-l.filterChannel:
-				l.filterLock.Lock()
-				l.finSlice = l.finSlice[:0]
-				l.globalCount = 0
-				l.filterLock.Unlock()
-				l.filterLine(exp, len(l.inSlice)-1)
-			default:
-				// No filter change, just process the new line
-				l.filterLine(nil, len(l.inSlice)-1)
-			}
+			// Apply filter
+			l.filterLine(l.currentFilter, len(l.inSlice)-1)
 
 			// Batch UI updates
 			if l.isFollowing && len(l.inSlice)%10 == 0 { // Update every 10 lines
@@ -132,6 +122,7 @@ func (l *LogView) filter() {
 		for {
 			l.rebufferFilter = false
 			exp := <-l.filterChannel
+			l.currentFilter = exp
 			l.clearFilterBuffer()
 			l.globalCount = 0
 			l.updateLineView()
@@ -143,7 +134,7 @@ func (l *LogView) filter() {
 				}
 				size := len(l.inSlice)
 				if i < size {
-					if err := l.filterLine(exp, i); err != nil {
+					if err := l.filterLine(l.currentFilter, i); err != nil {
 						break
 					}
 					i++
